@@ -1,1 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script type="text/javascript">
+        if (localStorage.getItem("darkMode") === "true") {
+            document.documentElement.classList.add("dark-mode-preload");
+        }
+    </script>
+
+    <title>❤️ GoodThings ❤️</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        .column-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            border-style: solid;
+            padding: 10px;
+            text-align: center;
+            min-width: 320px;
+        }
+
+        .editor {
+            display: none;
+        }
+	
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5); /* dark overlay */
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 400px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(0,0,0,0.3);
+        }
+
+        .close-button {
+            float: right;
+            font-size: 1.5em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .dark-mode {
+            background-color: #111;
+            color: #eee;
+        }
+        .dark-mode .column-box {
+            border-color: #888;
+        }
+        .dark-mode .modal-content {
+            background-color: #222;
+            color: #ddd;
+        }
+
+        .dark-mode-preload,
+        .dark-mode-preload body {
+            background-color: #111 !important;
+            color: #eee !important;
+        }
+
+        body, .modal-content, .column-box {
+            transition: all 0.5s ease;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(-200px); opacity: 0; }
+        }
+
+        #timerButton {
+            display: none;
+            }
+    </style>
+</head>
+
+<body>
+    <div>
+        <span onclick="burstHearts()" style="cursor: pointer; color: inherit;">❤️</span>
+        <span style="font-weight:bold;font-size:13pt;">GoodThings</span>
+        <span>❤️</span>
+    </div>
+
+    <div style="height:24px">
+        <div id="greeting">.</div>
+        <div id="motivation">.</div>
+    </div>
+
+    <h1>Points: <span id="count">0</span></h1>
+    
+
+    <div id="rainyDayBox">
+        <button onclick="useRainyDay()" style="background-color: #88c; color: white; border-radius: 5px; padding: 8px;">
+            🌧️ Rainy Day Boost 🌧️
+        </button>
+        <div id="rainyMessage" style="margin-top: 5px; font-size: 0.9em; opacity: 0.8;"></div>
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+        <!-- GOALS COLUMN -->
+        <div class="column-box">
+            <span style="font-weight:bold;font-size:15pt;">✅ Goals ✅</span>
+
+	        <div id="goalEditor" class="editor">
+                <input type="text" id="goalName" placeholder="New Goal">
+                <input type="number" id="goalPoints" placeholder="Points" style="width: 60px;">
+                <button onclick="addGoal()">Add</button>
+            </div>
+
+            <div id="goalsList"></div>
+
+	        <hr style="width:90%"></hr>
+	        <div><span>misc. </span>
+      	        <button onclick="increment(1)"> +1</button>
+	            <button onclick="increment(2)"> +2</button>
+	            <button onclick="increment(5)"> +5</button>
+            </div>
+        </div>
+
+        <!-- REWARDS COLUMN -->
+        <div class="column-box">
+            <span style="font-weight:bold; font-size:15pt;">🔥 Rewards 🔥</span>
+
+	        <div id="rewardEditor" class="editor">
+                <input type="text" id="rewardName" placeholder="New Reward">
+                <input type="number" id="rewardPoints" placeholder="Cost" style="width: 60px;">
+                <button onclick="addReward()">Add</button>
+            </div>
+
+            <div id="rewardsList"></div>
+
+	        <hr style="width:90%"></hr>
+	        <div><span>misc. </span>
+          	    <button onclick="increment(-1)"> -1</button>
+	            <button onclick="increment(-2)"> -2</button>
+	            <button onclick="increment(-5)"> -5</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTTOM BUTTONS -->
+    <div style="padding-top: 8px">
+        <button onclick="toggleEditor()" id="editorToggle" style="width: 110px" title="lets add some goals babyyy!!">🛠️ Edit Mode 🛠️</button>
+        <button onclick="toggleInfoModal()" title="this is just the little note from when you first opened the app...">Info 🧐</button>
+        <button onclick="toggleDarkMode()" title="maybe i will add more colors soon"> Dark Mode 🌙</button>
+        <button id="timerButton" onclick="toggleCountdownModal()" title="i can't wait to see youuuu">Countdown ⏳</button>
+        <button onclick="toggleJournalModal()">Reflect 📝</button>
+        <button onclick="toggleLogModal()" title="this is a log of all of the things you've said and done on here">Log 🪵</button>
+        <button onclick="set(0)" title="resets your points to 0 if you want">Reset Points ↺</button>
+        <button onclick="clearGoalsAndRewards()" title="lets wipe that slate clean and start all over (if you want)">Reset All 😵</button>
+    </div>
+
+    <footer style="text-align:center; position: fixed; bottom: 0; font-size: 0.8em; opacity: 0.3;">Made by Matt</footer>
+
+    <!-- Pop-Ups -->
+    <div id="infoModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="toggleInfoModal()">&times;</span>
+            <h2>About</h2>
+            <p>This is a little tool to help me stay on task. To add your own rewards and goals, click on the "Edit Mode" button.</p>
+            <p>I'm still actively developing this tool, so a lot is going to change. Let me know if there are any features you'd like to see.</p>
+            <span>You can check out my page at <a href="index.html">here</a> for more apps to come!</span>
+            <p>Thank you!</p>
+        </div>
+    </div>
+
+    <div id="rainModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="toggleRainModal()">&times;</span>
+            <h2>🌧️ Rainy Day? 🌧️</h2>
+            <p>I noticed your points are kind of low. Here's a little hug from me, okay?</p>
+            <p>And also here's a few points! You're doing a great job.</p>
+        </div>
+    </div>
+
+    <div id="countdownModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="toggleCountdownModal()">&times;</span>
+            <h2>⏳ Countdown ⏳</h2>
+            <p id="countdownText">Loading...</p>
+        </div>
+    </div>
+
+    <div id="journalModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="toggleJournalModal()">&times;</span>
+            <h2>📝 Journal</h2>
+            <p id="journalQuestion">What's on your mind?</p>
+            <textarea id="journalResponse" rows="4" style="width: 95%; max-width: 95%; resize: vertical; border-radius: 5px;"></textarea>
+            <br>
+            <button onclick="getNewJournalQuestion()">New Question 🔁</button>
+            <button onclick="saveJournal()">Save 📝</button>
+        </div>
+    </div>
+
+    <div id="logModal" class="modal">
+        <div class="modal-content" style="max-height: 70vh; overflow-y: auto;">
+            <span class="close-button" onclick="toggleLogModal()">&times;</span>
+            <h2>📜 Your Log</h2>
+            <div id="logContainer" style="text-align: left; font-size: 0.95em;"></div>
+        </div>
+    </div>
+    
+
+    <script type="text/javascript">
+        // Counter logic
+        let count = parseInt(localStorage.getItem("counter")) || 0;
+        document.getElementById("count").textContent = count;
+
+        // Add or subtract points
+        function increment(num) {
+            count += num;
+
+            // Surprise bonus chance!
+            if (Math.random() < 0.03) { // 3% chance
+                count += 5;
+                alert("✨ Surprise bonus! +5 points!");
+            }
+
+            updateDisplay();
+        }
+
+        // Set Points
+        function set(num) {
+            count = num;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            updateRainyDayVisibility();
+            document.getElementById("count").textContent = count;
+            localStorage.setItem("counter", count);
+        }
+
+        // Goals and Rewards logic
+        let editMode = false;
+        let goals = JSON.parse(localStorage.getItem("goals")) || [];
+        let rewards = JSON.parse(localStorage.getItem("rewards")) || [];
+
+        function saveAndRender() {
+            localStorage.setItem("goals", JSON.stringify(goals));
+            localStorage.setItem("rewards", JSON.stringify(rewards));
+            renderLists();
+        }
+
+        function addGoal() {
+            const name = document.getElementById("goalName").value;
+            const points = parseInt(document.getElementById("goalPoints").value);
+            if (name && !isNaN(points)) {
+                goals.push({ name, points });
+                document.getElementById("goalName").value = '';
+                document.getElementById("goalPoints").value = '';
+                saveAndRender();
+            }
+        }
+
+        function addReward() {
+            const name = document.getElementById("rewardName").value;
+            const points = parseInt(document.getElementById("rewardPoints").value);
+            if (name && !isNaN(points)) {
+                rewards.push({ name, points });
+                document.getElementById("rewardName").value = '';
+                document.getElementById("rewardPoints").value = '';
+                saveAndRender();
+            }
+        }
+
+        function renderLists() {
+            const goalsContainer = document.getElementById("goalsList");
+            const rewardsContainer = document.getElementById("rewardsList");
+            goalsContainer.innerHTML = '';
+            rewardsContainer.innerHTML = '';
+
+            // --- GOALS ---
+            if (goals.length === 0) {
+                const placeholder = document.createElement("div");
+                placeholder.style.opacity = "0.5";
+                placeholder.textContent = "Add goals in Edit Mode.";
+                goalsContainer.appendChild(placeholder);
+            } else {
+                goals.forEach((goal, i) => {
+                    const div = document.createElement("div");
+                    div.innerHTML = `${goal.name} 
+                        <button onclick="increment(${goal.points}); addLogEntry('Goal: ${goal.name} (+${goal.points})')">+${goal.points}</button>
+                        <button class="goal-delete" onclick="deleteGoal(${i})" style="display: ${editMode ? 'inline-block' : 'none'};">❌</button>`;
+                    goalsContainer.appendChild(div);
+                });
+            }
+
+            // --- REWARDS ---
+            if (rewards.length === 0) {
+                const placeholder = document.createElement("div");
+                placeholder.style.opacity = "0.5";
+                placeholder.textContent = "Add rewards in Edit Mode.";
+                rewardsContainer.appendChild(placeholder);
+            } else {
+                rewards.forEach((reward, i) => {
+                    const div = document.createElement("div");
+                    div.innerHTML = `${reward.name} 
+                        <button onclick="increment(-${reward.points}); addLogEntry('Reward: ${reward.name} (-${reward.points})')">-${reward.points}</button>
+                        <button class="reward-delete" onclick="deleteReward(${i})" style="display: ${editMode ? 'inline-block' : 'none'};">❌</button>`;
+                    rewardsContainer.appendChild(div);
+                });
+            }
+        }
+
+
+        function toggleEditor() {
+            editMode = !editMode;
+            const goalEditor = document.getElementById("goalEditor");
+            const rewardEditor = document.getElementById("rewardEditor");
+            const toggleBtn = document.getElementById("editorToggle");
+
+            goalEditor.style.display = editMode ? "block" : "none";
+            rewardEditor.style.display = editMode ? "block" : "none";
+            toggleBtn.innerText = editMode ? "Done" : "🛠️ Edit Mode 🛠️";
+
+            renderLists(); // Re-render to update "X" buttons
+        }
+
+        function deleteGoal(index) {
+            goals.splice(index, 1);
+            saveAndRender();
+        }
+
+        function deleteReward(index) {
+            rewards.splice(index, 1);
+            saveAndRender();
+        }
+
+        function clearGoalsAndRewards() {
+            if (confirm("woah there! are you sure you wanna get rid of everything? i can't put it back it'll be gone forever")) {
+                goals = [];
+                rewards = [];
+                set(0);
+                saveAndRender();
+
+                // 💥 Clear journal entries
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith("journal-")) {
+                        localStorage.removeItem(key);
+                    }
+                });
+
+                // Optional: clear log too?
+                localStorage.removeItem("log");
+            }
+        }
+
+        // Cosmetics
+        function toggleInfoModal() {
+            const modal = document.getElementById("infoModal");
+            modal.style.display = (modal.style.display === "block") ? "none" : "block";
+        }
+
+        function toggleRainModal() {
+            const modal = document.getElementById("rainModal");
+            modal.style.display = (modal.style.display === "block") ? "none" : "block";
+        }
+
+        window.onload = function () {
+            if (!localStorage.getItem("visitedBefore")) {
+                set(5)
+                localStorage.setItem("rainyUsed", new Date().toDateString());
+                localStorage.setItem("visitedBefore", "true");
+            }
+        };
+
+        function updateRainyDayVisibility() {
+            const box = document.getElementById("rainyDayBox");
+            const usedToday = localStorage.getItem("rainyUsed") === new Date().toDateString();
+
+            if (count < 0 && !usedToday) {
+                box.style.display = "block";
+            } else {
+                box.style.display = "none";
+            }
+        }
+
+        function useRainyDay() {
+            set(5)
+            localStorage.setItem("rainyUsed", new Date().toDateString());
+            toggleRainModal()
+            updateRainyDayVisibility();
+        }
+
+        const darkMode = localStorage.getItem("darkMode") === "true";
+        if (darkMode) {
+            document.documentElement.classList.remove("dark-mode-preload");
+            document.body.classList.add("dark-mode");
+        }
+
+        function toggleDarkMode() {
+            const newMode = !document.body.classList.contains("dark-mode");
+            document.body.classList.toggle("dark-mode", newMode);
+            localStorage.setItem("darkMode", newMode);
+        }
+
+        function burstHearts() {
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    const maxHeight = Math.random() * 200 + 100; // between 100px and 300px
+
+                    heart.textContent = "❤️";
+                    heart.style.position = 'fixed';
+                    heart.style.left = `${Math.random() * 100}%`;
+                    heart.style.top = '100%';
+                    heart.style.fontSize = '24px';
+                    heart.style.pointerEvents = 'none';
+
+                    // Custom animation with variable height
+                    const animationName = `floatUp${i}`;
+                    const keyframes = `
+                        @keyframes ${animationName} {
+                            0% { transform: translateY(0); opacity: 1; }
+                            100% { transform: translateY(-${maxHeight}px); opacity: 0; }
+                        }
+                    `;
+
+                    const styleSheet = document.createElement("style");
+                    styleSheet.innerText = keyframes;
+                    document.head.appendChild(styleSheet);
+
+                    heart.style.animation = `${animationName} 2s ease-out forwards`;
+                    document.body.appendChild(heart);
+
+                    setTimeout(() => {
+                        heart.remove();
+                        styleSheet.remove();
+                    }, 2200);
+                }, Math.random() * 1000); // Random delay
+            }
+        }
+
+        function setGreetingAndMotivation (){
+            const greetings = {
+            0: "Happy Sunday!",
+            1: "Happy Monday!",
+            2: "Happy Tuesday!",
+            3: "Happy Wednesday!",
+            4: "Happy Thursday!",
+            5: "Happy Friday!",
+            6: "Happy Saturday!"
+            };
+
+            const today = new Date().getDay();
+            const greeting = greetings[today] || "Happy Day!";
+            document.getElementById("greeting").innerText = greeting;
+
+            const motivations = [
+                "Let's do good today :)",
+                "You're awesome!!",
+                "One step at a time :)",
+                "Progress is progress, no matter how small",
+                "You're very capable :)",
+                "Keep it up!",
+                "Believe in yourself",
+                "I believe in you!",
+                "Make something good happen today",
+                "Even small wins are still wins",
+                "Effort matters more than perfection",
+                "I'm proud of you :)",
+                "Be proud of every bit of progress",
+                "You can do hard things"
+            ];
+
+            const motivation = motivations[Math.floor(Math.random() * motivations.length)];
+            const hour = new Date().getHours();
+
+            if (hour >= 22) {
+                document.getElementById("motivation").innerText = "🌙 Time to wind down.";
+            } else if (hour >= 5 && hour <= 7) {
+                document.getElementById("motivation").innerText = "🐥 Early bird! Have a good day.";
+            } else if (hour <= 2) {
+                document.getElementById("motivation").innerText = "🌙 It's late! You should get to sleep soon.";
+            } else {
+                document.getElementById("motivation").innerText = motivation;
+            }
+        }
+
+        (function () {
+            setGreetingAndMotivation()
+            updateRainyDayVisibility();
+            renderLists()
+        })();
+
+        let sparkleKeyDown = false;
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key.toLowerCase() === 's' && !sparkleKeyDown) {
+                sparkleKeyDown = true;
+                startSparkleRain();
+            }
+        });
+
+        document.addEventListener('keyup', function(e) {
+            if (e.key.toLowerCase() === 's') {
+                sparkleKeyDown = false;
+            }
+        });
+
+        function startSparkleRain() {
+            if (!sparkleKeyDown) return;
+
+            const sparkle = document.createElement('div');
+            const emojis = ['✨', '🌟', '💫', '⭐️', '✨'];
+            sparkle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            sparkle.style.position = 'fixed';
+            sparkle.style.left = mouseX + 'px';
+            sparkle.style.top = mouseY + 'px';
+            sparkle.style.fontSize = '20px';
+            sparkle.style.pointerEvents = 'none';
+            sparkle.style.zIndex = 9999;
+
+            document.body.appendChild(sparkle);
+
+            sparkle.animate([
+                { transform: 'translateY(0)', opacity: 1 },
+                { transform: 'translateY(60px)', opacity: 0 }
+            ], {
+                duration: 800,
+                easing: 'ease-out'
+            });
+
+            setTimeout(() => sparkle.remove(), 800);
+
+            // Keep spawning sparkles while key is held
+            setTimeout(startSparkleRain, 90);
+        }
+
+        let mouseX = 0;
+        let mouseY = 0;
+
+        document.addEventListener('mousemove', function(e) {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        const targetDate = new Date("2025-05-22T19:30:00"); // <-- SET YOUR TARGET DATE HERE
+
+        function updateCountdown() {
+            const now = new Date();
+            const diff = targetDate - now;
+
+            if (diff <= 0) {
+                document.getElementById("countdownText").innerText = "🎉 Ciara home yayay 🎉";
+                return;
+            }
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+
+            document.getElementById("countdownText").innerText = 
+                `${days}d ${hours}h ${minutes}m ${seconds}s remaining!`;
+        }
+
+        let countdownInterval;
+
+        function toggleCountdownModal() {
+            const modal = document.getElementById("countdownModal");
+            const isOpen = modal.style.display === "block";
+
+            if (isOpen) {
+                clearInterval(countdownInterval);
+                modal.style.display = "none";
+            } else {
+                modal.style.display = "block";
+                updateCountdown();
+                countdownInterval = setInterval(updateCountdown, 1000);
+            }
+        }
+
+        const journalQuestions = [
+            "Tell me one thing you love about yourself.",
+            "Tell me something you're frustrated about.",
+            "What's something you're proud of?",
+            "What's one thing you can do to make tomorrow better?",
+            "What is something kind you've done recently.",
+            "What's something that made you smile recently?",
+            "How are you feeling?",
+            "Rant to me!",
+            "What's something you're grateful for?",
+            "Are you looking forward to anything special?",
+            "Tell me about someone you like.",
+            "Tell me one little thing you liked about today.",
+            "What's something you're handling better than you used to?",
+            "What's something you've learned about yourself lately?",
+            "Tell me about something you don't give yourself enough credit for?",
+            "How would your past self feel about where you are now?",
+            "What would you tell little you?",
+            "What is something you want to accept about yourself?",
+            "Tell me about something cozy you wanna do soon!",
+            "What's something small that made you feel safe?",
+            "If today was a color, what color would it be and why?",
+            "What song have you been listening to lately and why?",
+            "Tell me about a memory that makes you feel warm.",
+            "What's something new you want to try soon?",
+            "Come up with a little goal for today.",
+            "What would future you thank you for doing today?",
+            "What's something that's been bothering you? Let it out!",
+            "What's something you wish people understood about you or your feelings?",
+            "What's something you wish you could hear from someone else right now?",
+            "If you could do anything, what would you do first?",
+            "What's something that made you laugh recently",
+            "What animal fits today's vibe?"
+        ];
+
+        function toggleJournalModal() {
+            const modal = document.getElementById("journalModal");
+            const question = "What's on your mind?";
+            document.getElementById("journalQuestion").innerText = question;
+
+            document.getElementById("journalResponse").value = "";
+
+            modal.style.display = (modal.style.display === "block") ? "none" : "block";
+        }
+
+        function saveJournal() {
+            const today = new Date().toDateString();
+            const response = document.getElementById("journalResponse").value.trim();
+
+            if (response) {
+                localStorage.setItem(`journal-${today}`, response);
+                addLogEntry(`Journal Entry: "${response}"`);
+                toggleJournalModal()
+            }
+        }
+
+        function getNewJournalQuestion() {
+            const question = journalQuestions[Math.floor(Math.random() * journalQuestions.length)];
+            document.getElementById("journalQuestion").innerText = question;
+        }
+
+        function addLogEntry(text) {
+            const now = new Date();
+
+            const hourKey = now.getFullYear() + "-" +
+                String(now.getMonth() + 1).padStart(2, '0') + "-" +
+                String(now.getDate()).padStart(2, '0') + "T" +  // <-- ISO 8601 format
+                String(now.getHours()).padStart(2, '0') + ":00";
+
+            const entry = {
+                text,
+                timestamp: now.toLocaleString(),
+                hourKey
+            };
+
+            let log = JSON.parse(localStorage.getItem("log")) || [];
+            log.unshift(entry); // newest first
+            localStorage.setItem("log", JSON.stringify(log));
+        }
+
+
+        function toggleLogModal() {
+            const modal = document.getElementById("logModal");
+            modal.style.display = modal.style.display === "block" ? "none" : "block";
+            if (modal.style.display === "block") renderLog();
+        }
+
+        function renderLog() {
+            const log = JSON.parse(localStorage.getItem("log")) || [];
+            const container = document.getElementById("logContainer");
+            container.innerHTML = "";
+
+            if (log.length === 0) {
+                container.innerHTML = "<p style='opacity: 0.6;'>No log entries yet!</p>";
+                return;
+            }
+
+            const grouped = {};
+
+            // Group entries by hourKey
+            log.forEach(entry => {
+                if (!grouped[entry.hourKey]) grouped[entry.hourKey] = [];
+                grouped[entry.hourKey].push(entry);
+            });
+
+            const hourKeys = Object.keys(grouped).sort((a, b) => new Date(b) - new Date(a)); // newest first
+
+            hourKeys.forEach(hourKey => {
+                const readableDate = new Date(hourKey).toLocaleString(undefined, {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "numeric"
+                });
+
+                const groupHeader = document.createElement("div");
+                groupHeader.innerHTML = `<h4 style="margin-top: 12px;">🕒 ${readableDate}</h4>`;
+                container.appendChild(groupHeader);
+
+                grouped[hourKey].forEach(entry => {
+                    const div = document.createElement("div");
+                    div.style.borderLeft = "3px solid #ccc";
+                    div.style.paddingLeft = "8px";
+                    div.style.marginBottom = "6px";
+                    div.innerHTML = `${entry.text}`;
+                    container.appendChild(div);
+                });
+            });
+        }
+
+        let keysPressed = {};
+
+        document.addEventListener('keydown', function(e) {
+            keysPressed[e.key.toLowerCase()] = true;
+
+            if (keysPressed['c'] && keysPressed['t']) {
+                document.getElementById('timerButton').style.display = 'inline-block';
+            }
+        });
+
+        document.addEventListener('keyup', function(e) {
+            keysPressed[e.key.toLowerCase()] = false;
+        });
+
+
+    </script>
+</body>
+</html>
 
