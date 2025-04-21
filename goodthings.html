@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <script type="text/javascript">
-        if (localStorage.getItem("darkMode") === "true") {
-            document.documentElement.classList.add("dark-mode-preload");
-        }
+    <script>
+        (function preloadTheme() {
+          const theme = localStorage.getItem("theme") || "light";
+      
+          document.documentElement.classList.add(`theme-${theme}`, 'theme-preload');
+        })();
     </script>
 
     <title>❤️ GoodThings ❤️</title>
@@ -13,6 +15,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
+        /* Theme-specific modal overrides */
+        .theme-light .modal-content {
+            background-color: #fff;
+            color: #000;
+        }
+
+        .theme-dark .modal-content {
+            background-color: #222;
+            color: #ddd;
+            border-color: #ffffff;
+        }
+
+        .theme-ocean .modal-content {
+            background-color: #264653;
+            color: #a8dadc;
+            border-color: #a8dadc;
+        }
+
+        .theme-sunset .modal-content {
+            background-color: #ff9e80;
+            color: #3e2723;
+        }
+
+        .theme-strawberry .modal-content {
+            background-color: #f72061;
+            color: #ffd9eb;
+            border-color: #ffd9eb;
+        }
+
+        .theme-hacker .modal-content {
+            background-color: #000000;
+            color: #4dff00;
+            border-color: #4dff00;
+        }
+
+
+        .theme-preload *,
+        .theme-preload {
+            transition: none !important;
+        }
+
         .column-box {
             display: flex;
             flex-direction: column;
@@ -58,25 +101,7 @@
             cursor: pointer;
         }
 
-        .dark-mode {
-            background-color: #111;
-            color: #eee;
-        }
-        .dark-mode .column-box {
-            border-color: #888;
-        }
-        .dark-mode .modal-content {
-            background-color: #222;
-            color: #ddd;
-        }
-
-        .dark-mode-preload,
-        .dark-mode-preload body {
-            background-color: #111 !important;
-            color: #eee !important;
-        }
-
-        body, .modal-content, .column-box {
+        html, body, .modal-content, .column-box {
             transition: all 0.5s ease;
         }
 
@@ -88,6 +113,31 @@
         #timerButton {
             display: none;
             }
+
+        .theme-light {
+            background-color: #fff;
+            color: #000;
+        }
+        .theme-dark {
+            background-color: #111;
+            color: #eee;
+        }
+        .theme-ocean {
+            background-color: #003f5c;
+            color: #a8dadc;
+        }
+        .theme-sunset {
+            background-color: #ff6e40;
+            color: #fff3e0;
+        }
+        .theme-strawberry {
+            background-color: #f72061;
+            color: #ffd9eb;
+        }
+        .theme-hacker {
+            background-color: #000000;
+            color: #4dff00;
+        }
     </style>
 </head>
 
@@ -159,7 +209,7 @@
     <div style="padding-top: 8px">
         <button onclick="toggleEditor()" id="editorToggle" style="width: 110px" title="lets add some goals babyyy!!">🛠️ Edit Mode 🛠️</button>
         <button onclick="toggleInfoModal()" title="this is just the little note from when you first opened the app...">Info 🧐</button>
-        <button onclick="toggleDarkMode()" title="maybe i will add more colors soon"> Dark Mode 🌙</button>
+        <button onclick="toggleThemeModal()" title="choose your favorite vibe">Theme 🎨</button>
         <button id="timerButton" onclick="toggleCountdownModal()" title="i can't wait to see youuuu">Countdown ⏳</button>
         <button onclick="toggleJournalModal()">Reflect 📝</button>
         <button onclick="toggleLogModal()" title="this is a log of all of the things you've said and done on here">Log 🪵</button>
@@ -175,7 +225,7 @@
             <span class="close-button" onclick="toggleInfoModal()">&times;</span>
             <h2>About</h2>
             <p>This is a little tool to help me stay on task. To add your own rewards and goals, click on the "Edit Mode" button.</p>
-            <p>I'm still actively developing this tool, so a lot is going to change. Let me know if there are any features you'd like to see.</p>
+            <p>I'm still actively developing this, so a lot is going to change. Let me know if there are any features you'd like to see.</p>
             <span>You can check out my page at <a href="index.html">here</a> for more apps to come!</span>
             <p>Thank you!</p>
         </div>
@@ -215,6 +265,20 @@
             <span class="close-button" onclick="toggleLogModal()">&times;</span>
             <h2>📜 Your Log</h2>
             <div id="logContainer" style="text-align: left; font-size: 0.95em;"></div>
+        </div>
+    </div>
+
+    <div id="themeModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="toggleThemeModal()">&times;</span>
+            <h2>🎨 Choose Your Theme</h2>
+    
+            <button onclick="applyTheme('light')">☀️ Light</button>
+            <button onclick="applyTheme('dark')">🌙 Dark</button>
+            <button onclick="applyTheme('ocean')">🌊 Ocean</button>
+            <button onclick="applyTheme('sunset')">🌇 Sunset</button>
+            <button onclick="applyTheme('strawberry')">🍓 Strawberry</button>
+            <button onclick="applyTheme('hacker')">👾 Hacker</button>
         </div>
     </div>
     
@@ -376,6 +440,8 @@
         }
 
         window.onload = function () {
+            document.documentElement.classList.remove("theme-preload");
+
             if (!localStorage.getItem("visitedBefore")) {
                 set(5)
                 localStorage.setItem("rainyUsed", new Date().toDateString());
@@ -399,18 +465,6 @@
             localStorage.setItem("rainyUsed", new Date().toDateString());
             toggleRainModal()
             updateRainyDayVisibility();
-        }
-
-        const darkMode = localStorage.getItem("darkMode") === "true";
-        if (darkMode) {
-            document.documentElement.classList.remove("dark-mode-preload");
-            document.body.classList.add("dark-mode");
-        }
-
-        function toggleDarkMode() {
-            const newMode = !document.body.classList.contains("dark-mode");
-            document.body.classList.toggle("dark-mode", newMode);
-            localStorage.setItem("darkMode", newMode);
         }
 
         function burstHearts() {
@@ -735,6 +789,29 @@
             keysPressed[e.key.toLowerCase()] = false;
         });
 
+        function toggleThemeModal() {
+            const modal = document.getElementById("themeModal");
+            modal.style.display = (modal.style.display === "block") ? "none" : "block";
+        }
+
+        function applyTheme(theme) {
+        // Remove old theme classes
+        document.documentElement.classList.remove(
+            'theme-light', 'theme-dark', 'theme-ocean', 'theme-sunset', 'theme-strawberry', 'theme-hacker'
+        );
+
+        // Add the new one
+        document.documentElement.classList.add(`theme-${theme}`);
+        localStorage.setItem("theme", theme);
+    }
+
+        (function applySavedTheme() {
+            const theme = localStorage.getItem("theme") || "light";
+
+            document.documentElement.className = `theme-${theme}`;
+            document.documentElement.style.backgroundColor = '';
+            document.documentElement.style.color = '';
+        })();
 
     </script>
 </body>
