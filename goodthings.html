@@ -113,6 +113,13 @@
         #timerButton {
             display: none;
             }
+        
+        hr {
+            border: none;
+            height: 1px;
+            background-color: currentColor;
+            opacity: 0.4;
+        }
 
         .theme-light {
             background-color: #fff;
@@ -207,11 +214,11 @@
 
     <!-- BOTTOM BUTTONS -->
     <div style="padding-top: 8px">
-        <button onclick="toggleEditor()" id="editorToggle" style="width: 110px" title="lets add some goals babyyy!!">🛠️ Edit Mode 🛠️</button>
-        <button onclick="toggleInfoModal()" title="this is just the little note from when you first opened the app...">Info 🧐</button>
+        <button onclick="toggleEditor()" id="editorToggle" style="width: 115px" title="lets add some goals babyyy!!">🛠️ Edit Mode 🛠️</button>
+        <button onclick="toggleInfoModal()" title="about this place">Info 🧐</button>
         <button onclick="toggleThemeModal()" title="choose your favorite vibe">Theme 🎨</button>
-        <button id="timerButton" onclick="toggleCountdownModal()" title="i can't wait to see youuuu">Countdown ⏳</button>
-        <button onclick="toggleJournalModal()">Reflect 📝</button>
+        <button id="timerButton" onclick="toggleCountdownModal()" title="this is a secret tehe">Countdown ⏳</button>
+        <button onclick="toggleJournalModal()" title = "its good to write things down">Reflect 📝</button>
         <button onclick="toggleLogModal()" title="this is a log of all of the things you've said and done on here">Log 🪵</button>
         <button onclick="set(0)" title="resets your points to 0 if you want">Reset Points ↺</button>
         <button onclick="clearGoalsAndRewards()" title="lets wipe that slate clean and start all over (if you want)">Reset All 😵</button>
@@ -780,7 +787,7 @@
         document.addEventListener('keydown', function(e) {
             keysPressed[e.key.toLowerCase()] = true;
 
-            if (keysPressed['c'] && keysPressed['t']) {
+            if (keysPressed['c'] && keysPressed['m']) {
                 document.getElementById('timerButton').style.display = 'inline-block';
             }
         });
@@ -816,4 +823,3 @@
     </script>
 </body>
 </html>
-

@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🌙 Yawniverse</title>
+  <style>
+.week-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+    body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background-color: #213448;
+    color: #f8f9ef;
+    text-align: center;
+    }
+
+    .container {
+    padding: 50px 20px;
+    }
+
+    h1 {
+    font-size: 3rem;
+    margin-bottom: 30px;
+    color: #ECEFCA;
+    }
+
+    .button-group button {
+    margin: 10px;
+    padding: 12px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #94B4C1;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    }
+
+    .button-group button:hover {
+    background-color: #547792;
+    }
+
+    /* Modal styles */
+    .modal {
+    display: none;
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+    }
+
+    .modal-content {
+    background-color: #213448;
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    text-align: left;
+    }
+
+    .close {
+    color: #ecefcab7;
+    float: right;
+    font-size: 28px;
+    cursor: pointer;
+    }
+
+    .close:hover {
+    color: #ECEFCA;
+    }
+
+    .section {
+  padding: 30px;
+  margin-top: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  color: #000000;
+}
+
+a {
+  color: #94B4C1; /* Default link color */
+  text-decoration: none; /* Removes underline */
+}
+
+.sleep-log-form {
+  margin-top: 20px;
+}
+
+.sleep-log-form form {
+  margin-top: 10px;
+}
+
+.sleep-log-form input,
+.sleep-log-form select {
+  font-size: 1rem;
+  margin: 4px;
+  padding: 5px;
+}
+
+.weekly-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+  margin-top: 40px;
+  text-align: center;
+}
+
+.day-column {
+  background-color: #f5f5f5;
+  padding: 15px;
+  border-radius: 6px;
+  min-height: 80px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.averages-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+  flex-wrap: wrap; /* Optional: allows wrapping on smaller screens */
+}
+
+.monthly-averages,
+.weekly-averages {
+  background-color: #eafaf1;
+  padding: 15px;
+  border-radius: 8px;
+  border: 2px solid #2ecc71;
+  width: 250px;
+  text-align: center;
+}
+
+.log-button {
+  background-color: #547792;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+  vertical-align: middle;
+}
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-top: 20px;
+  text-align: center;
+  max-width: 500px;  /* control total width */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.month-day {
+  font-weight: bold;
+  background-color: #f0f0f0;
+  padding: 8px;
+  border-radius: 4px;
+}
+
+.month-cell {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-height: 40px; /* smaller height */
+  padding: 4px;      /* tighter spacing */
+  font-size: 0.8rem; /* smaller text */
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.month-view-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 0 auto;
+  max-width: 900px; /* keeps layout centered */
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.hover-info {
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  padding: 20px;
+  width: 200px;
+  color: #000;
+  text-align: left;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  height: fit-content;
+  flex-shrink: 0;
+}
+
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+}
+
+#hoverLogs {
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+.month-day {
+  font-weight: bold;
+  background-color: #f0f0f0;
+  padding: 6px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.month-cell {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  min-height: 40px;
+  padding: 4px;
+  font-size: 0.75rem;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.month-cell.has-log {
+  background-color: #d2f5d2; /* Light green */
+  cursor: pointer;
+}
+
+.month-cell:hover {
+  outline: 2px solid #2ecc71;
+}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌙 Yawniverse Sleep Helper 🌙</h1>
+    <div class="button-group">
+      <button onclick="openModal('aboutModal')">About</button>
+      <button onclick="showSection('history')">History</button>
+      <button onclick="showSection('calculator')">Calculator</button>
+      <button onclick="openModal('resourcesModal')">Resources</button>
+      <button onclick="openModal('settingsModal')">Settings</button>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div id="aboutModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('aboutModal')">&times;</span>
+      <h2>About</h2>
+      <p>
+        Hi, I'm Matt. I've been struggling with insomnia. I put this site together to help me get more consistent sleep. This app is a work in progress, so
+        feel free to reach out with any suggestions. Play around and try it out!
+      </p>
+      <div>I have other apps available <a href="index.html">here</a>.</div>
+      <p>Sweet dreams!</p>
+    </div>
+  </div>
+
+  <div id="resourcesModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('resourcesModal')">&times;</span>
+      <h2>Resources</h2>
+      <p>Links to sleep science, sleep hygiene tips, and more will go here.</p>
+    </div>
+  </div>
+
+  <div id="settingsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('settingsModal')">&times;</span>
+      <h2>Settings</h2>
+      <p>Customize your preferences here in the future.</p>
+    </div>
+  </div>
+
+  <div id="logManagerModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('logManagerModal')">&times;</span>
+      <h2>Manage Sleep Logs</h2>
+      <button onclick="clearAllLogs()" style="margin-bottom: 15px;">🧹 Clear All Logs</button>
+      <ul id="logList" style="list-style: none; padding: 0;"></ul>
+    </div>
+  </div>
+
+  <!-- Sections -->
+<div id="calculator" class="section" style="display: none;">
+    <h2>💤 Sleep Calculator 💤</h2>
+    <form id="sleepCalcForm">
+        <p>
+          I want to 
+          <select id="action">
+            <option value="wake">wake up</option>
+            <option value="sleep">go to sleep</option>
+          </select>
+          at 
+          <input type="number" id="hour" min="1" max="12" placeholder="hh" required style="width: 50px;">
+          :
+          <input type="number" id="minute" min="0" max="59" placeholder="mm" required style="width: 50px;">
+          <select id="ampm">
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+          </select>
+        </p>
+      
+        <p>
+          Age (optional): 
+          <input type="number" id="age" min="0" placeholder="e.g. 25" style="width: 70px;">
+        </p>
+      
+        <button type="submit">Calculate</button>
+      </form>
+      
+      <div id="result" style="margin-top: 20px;"></div>
+
+      <div style="margin-top: 50px;">
+        Some more information:
+        <p>research about sleep cycles and stuff.</p>
+      </div>
+  </div>
+  
+  <div id="history" class="section" style="display: none;">
+    <h2>History</h2>
+
+<!-- Sleep Log Form (already set up) -->
+<div class="sleep-log-form">
+  <label for="sleepLog"><strong>Log sleep:</strong></label>
+  <form id="sleepHistoryForm">
+    <p>
+      From 
+      <input type="date" id="logDate" required> 
+      <input type="number" id="startHour" min="1" max="12" placeholder="hh" style="width: 50px;" required> :
+      <input type="number" id="startMinute" min="0" max="59" placeholder="mm" style="width: 50px;" required>
+      <select id="startAmpm">
+        <option value="AM">AM</option>
+        <option value="PM">PM</option>
+      </select>
+
+      to 
+      <input type="number" id="endHour" min="1" max="12" placeholder="hh" style="width: 50px;" required> :
+      <input type="number" id="endMinute" min="0" max="59" placeholder="mm" style="width: 50px;" required>
+      <select id="endAmpm">
+        <option value="AM">AM</option>
+        <option value="PM">PM</option>
+      </select>
+
+      <button type="submit" class="log-button">Log</button>
+    </p>
+  </form>
+</div>
+<button onclick="openModal('logManagerModal')" class="log-button" style="margin-top: 20px;">Manage Sleep Logs</button>
+<hr></hr>
+
+<!-- Week View Title -->
+<h3 style="margin-top: 40px;">Week view:</h3>
+
+<div class="week-nav">
+    <button id="prevWeek" style="display: none;">⬅️</button>
+    <span id="weekRangeLabel"></span>
+    <button id="nextWeek" style="display: none;">➡️</button>
+  </div>
+
+<!-- Weekly View Grid -->
+<div class="weekly-grid">
+    <div class="day-column">Sunday</div>
+    <div class="day-column">Monday</div>
+    <div class="day-column">Tuesday</div>
+    <div class="day-column">Wednesday</div>
+    <div class="day-column">Thursday</div>
+    <div class="day-column">Friday</div>
+    <div class="day-column">Saturday</div>
+  </div>
+
+<hr style="margin-top : 40px;"></hr>
+
+<h3 style="margin-top: 40px;">Month view:</h3>
+<h4 id="monthLabel"></h4> <!-- This will show "April 2025", etc. -->
+<div class="month-view-container">  
+    <div class="month-grid" id="monthGrid">
+      <div class="month-day">Sun</div>
+      <div class="month-day">Mon</div>
+      <div class="month-day">Tue</div>
+      <div class="month-day">Wed</div>
+      <div class="month-day">Thu</div>
+      <div class="month-day">Fri</div>
+      <div class="month-day">Sat</div>
+      <!-- Calendar days will be added dynamically -->
+    </div>
+
+    <div class="hover-info" id="hoverInfo">
+        <h4>Sleep Log</h4>
+        <div id="showDate"></div>
+        <div id="hoverLogs">Hover over a day to see logs</div>
+    </div>
+  </div>
+
+<div class="averages-container">
+    <div class="weekly-averages">
+        <p><strong>Weekly average:</strong></p>
+        <p>Sleep: <span id="avgSleepWeekly">no data</span></p>
+        <p>Cycles: <span id="avgCyclesWeekly">no data</span></p>
+      </div>
+    <div class="monthly-averages">
+      <p><strong>Monthly average:</strong></p>
+      <p>Sleep: <span id="avgSleepMonthly">no data</span></p>
+      <p>Cycles: <span id="avgCyclesMonthly">no data</span></p>
+    </div>
+  </div>
+
+  </div>
+
+  <script>
+    function openModal(id) {
+  document.getElementById(id).style.display = "block";
+}
+
+function closeModal(id) {
+  document.getElementById(id).style.display = "none";
+}
+
+window.onclick = function(event) {
+  document.querySelectorAll('.modal').forEach(modal => {
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+};
+
+function showSection(sectionId) {
+  document.querySelectorAll('.section').forEach(sec => {
+    sec.style.display = "none";
+  });
+  document.getElementById(sectionId).style.display = "block";
+}
+
+window.onload = function() {
+  showSection('calculator'); // keep your existing logic
+
+  // Autofill sleep log date to yesterday
+  const logDateInput = document.getElementById("logDate");
+  if (logDateInput) {
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const yyyy = yesterday.getFullYear();
+    const mm = String(yesterday.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+    const dd = String(yesterday.getDate()).padStart(2, '0');
+
+    logDateInput.value = `${yyyy}-${mm}-${dd}`;
+
+    currentWeekStart = getStartOfWeek(new Date());
+    renderCurrentMonth();
+    renderWeekView();
+  }
+};
+
+// Handle form submit
+document.getElementById("sleepCalcForm").addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  const action = document.getElementById("action").value;
+  const hour = parseInt(document.getElementById("hour").value);
+  const minute = parseInt(document.getElementById("minute").value);
+  const ampm = document.getElementById("ampm").value;
+  const age = document.getElementById("age").value;
+
+  const resultDiv = document.getElementById("result");
+
+  // Convert time to 24h format
+  let hours24 = ampm === "PM" && hour !== 12 ? hour + 12 : hour;
+  if (ampm === "AM" && hour === 12) hours24 = 0;
+
+  const baseTime = new Date();
+  baseTime.setHours(hours24, minute, 0, 0); // Set target time
+
+  // Determine cycle counts
+  let cycles = [2, 3, 4, 5, 6];
+
+  // Determine recommended cycle count based on age
+  let recommendedCycles = 5;
+  if (age) {
+    const n = parseInt(age);
+    if (n < 18) recommendedCycles = 6;
+    else if (n >= 65) recommendedCycles = 4;
+  }
+
+  // Recommended time
+  let recommendedSleepTime = new Date(baseTime.getTime() - recommendedCycles * 90 * 60000);
+  let rh = recommendedSleepTime.getHours();
+  let rm = recommendedSleepTime.getMinutes().toString().padStart(2, "0");
+  let rsuffix = rh >= 12 ? "PM" : "AM";
+  rh = rh % 12 || 12;
+  let recommendedString = `${rh}:${rm} ${rsuffix}`;
+
+  const emojiMap = {
+    2: "🌘",
+    3: "🌗",
+    4: "🌖",
+    5: "🌕",
+    6: "🌔"
+  };
+
+  const customList = cycles.map(c => {
+    let minsToSubtract = c * 90;
+    let sleepTime = new Date(baseTime.getTime() - minsToSubtract * 60000);
+
+    let h = sleepTime.getHours();
+    let m = sleepTime.getMinutes().toString().padStart(2, "0");
+    let suffix = h >= 12 ? "PM" : "AM";
+    h = h % 12 || 12;
+
+    return `<li>${emojiMap[c]} ${c} sleep cycles: sleep by <strong>${h}:${m} ${suffix}</strong></li>`;
+  }).join("");
+
+  resultDiv.innerHTML = `
+    <p>If you want to <strong>${action === "sleep" ? "go to sleep" : "wake up"}</strong> at 
+    <strong>${hour}:${minute.toString().padStart(2, "0")} ${ampm}</strong>, here are some suggested times:</p>
+
+    <ul style="list-style: none; padding-left: 0; text-align: center;">
+      ${customList}
+    </ul>
+
+    <div style="
+      border: 2px solid #2ecc71;
+      background-color: #eafaf1;
+      color: #2c3e50;
+      padding: 10px 15px;
+      border-radius: 6px;
+      margin: 15px auto;
+      max-width: 300px;
+      font-weight: bold;
+    ">
+      ✅ Recommended: Sleep by <strong>${recommendedString}</strong> (${recommendedCycles} cycles)
+    </div>
+
+    ${age ? `<p>(It is recommended that people your age should get ${recommendedCycles} cycles per night.)</p>` : ''}
+  `;
+});
+
+let currentWeekStart = getStartOfWeek(new Date()); // default to current week
+function getStartOfWeek(date) {
+  const day = date.getDay(); // 0 = Sunday
+  const diff = date.getDate() - day;
+  return new Date(date.getFullYear(), date.getMonth(), diff);
+}
+
+function formatDate(date) {
+  return date.toISOString().split("T")[0];
+}
+
+function renderCurrentMonth() {
+  const monthGrid = document.getElementById("monthGrid");
+  const label = document.getElementById("monthLabel");
+  const hoverLogs = document.getElementById("hoverLogs");
+
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth(); // 0-indexed
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const firstDay = new Date(year, month, 1).getDay(); // 0 = Sunday
+
+  label.textContent = `${monthNames[month]} ${year}`;
+  monthGrid.querySelectorAll(".month-cell").forEach(cell => cell.remove());
+
+  const logs = JSON.parse(localStorage.getItem("sleepHistory") || "[]");
+
+  const logsByDate = {};
+  logs.forEach(entry => {
+    logsByDate[entry.date] = logsByDate[entry.date] || [];
+    logsByDate[entry.date].push(entry);
+  });
+
+  let totalMonthlyHours = 0;
+let totalMonthlyCycles = 0;
+let daysWithLogs = 0;
+
+Object.values(logsByDate).forEach(dayLogs => {
+  let dailyTotal = 0;
+  dayLogs.forEach(log => {
+    dailyTotal += calculateSleepDuration(
+      convertTo24Hour(log.startTime),
+      convertTo24Hour(log.endTime)
+    );
+  });
+
+  if (dailyTotal > 0) {
+    totalMonthlyHours += dailyTotal;
+    totalMonthlyCycles += Math.floor(dailyTotal / 1.5);
+    daysWithLogs++;
+  }
+});
+
+const avgSleepMonthly = daysWithLogs ? (totalMonthlyHours / daysWithLogs).toFixed(1) : "–";
+const avgCyclesMonthly = daysWithLogs ? (totalMonthlyCycles / daysWithLogs) : "–";
+
+document.getElementById("avgSleepMonthly").textContent = avgSleepMonthly + " hours";
+document.getElementById("avgCyclesMonthly").textContent = avgCyclesMonthly;
+
+
+  // Spacer cells
+  for (let i = 0; i < firstDay; i++) {
+    const empty = document.createElement("div");
+    empty.className = "month-cell";
+    empty.style.visibility = "hidden";
+    monthGrid.appendChild(empty);
+  }
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const cell = document.createElement("div");
+    cell.className = "month-cell";
+    cell.textContent = day;
+
+    if (logsByDate[dateStr]) {
+      cell.classList.add("has-log");
+
+      cell.addEventListener("mouseenter", () => {
+  const logs = logsByDate[dateStr];
+
+  // Format date (e.g. April 22, 2025)
+  const [y, m, d] = dateStr.split("-").map(Number);
+const hoverDate = new Date(y, m - 1, d); // m is 0-indexed
+  const options = { year: 'numeric', month: 'long', day: 'numeric' };
+  document.getElementById("showDate").textContent = hoverDate.toLocaleDateString(undefined, options);
+
+  if (logs && logs.length > 0) {
+    document.getElementById("hoverLogs").innerHTML = logs.map(log => {
+        return `<div style="margin-bottom: 6px;">
+  ${formatTimeWithSmallAmPm(log.startTime)} → ${formatTimeWithSmallAmPm(log.endTime)}
+</div>`;
+    }).join('');
+  } else {
+    document.getElementById("hoverLogs").innerHTML = "No sleep logs for this day.";
+  }
+});
+
+    }
+
+    monthGrid.appendChild(cell);
+  }
+}
+function stripAMPM(timeStr) {
+  return timeStr.split(" ")[0];
+}
+function formatTimeWithSmallAmPm(timeStr) {
+  const [time, ampm] = timeStr.split(" ");
+  return `${time}<span style="font-size: 0.7em;">${ampm}</span>`;
+}
+
+
+
+document.getElementById("sleepHistoryForm").addEventListener("submit", function(event) {
+  event.preventDefault();
+
+  const date = document.getElementById("logDate").value;
+  const startHour = parseInt(document.getElementById("startHour").value);
+  const startMinute = parseInt(document.getElementById("startMinute").value);
+  const startAmpm = document.getElementById("startAmpm").value;
+  const endHour = parseInt(document.getElementById("endHour").value);
+  const endMinute = parseInt(document.getElementById("endMinute").value);
+  const endAmpm = document.getElementById("endAmpm").value;
+
+  const sleepStartDate = new Date(date); // base date from input
+
+// Convert to 24h for logic
+const start24 = convertTo24Hour(`${startHour}:${startMinute.toString().padStart(2, '0')} ${startAmpm}`);
+const [sh, sm] = start24.split(":").map(Number);
+const startMinutes = sh * 60 + sm;
+
+if (startMinutes < 300) {
+  sleepStartDate.setDate(sleepStartDate.getDate() - 1);
+}
+
+const adjustedDate = sleepStartDate.toISOString().split("T")[0]; // YYYY-MM-DD
+
+const entry = {
+  date: adjustedDate,
+  startTime: `${startHour}:${startMinute.toString().padStart(2, '0')} ${startAmpm}`,
+  endTime: `${endHour}:${endMinute.toString().padStart(2, '0')} ${endAmpm}`
+};
+
+
+  // Save to localStorage
+  const history = JSON.parse(localStorage.getItem("sleepHistory") || "[]");
+  history.push(entry);
+  localStorage.setItem("sleepHistory", JSON.stringify(history));
+
+  renderWeekView(); // Update UI
+  renderCurrentMonth();
+});
+
+function renderWeekView() {
+  const history = JSON.parse(localStorage.getItem("sleepHistory") || "[]");
+  const grid = document.querySelectorAll(".weekly-grid .day-column");
+
+  // Reset grid
+  grid.forEach(col => {
+    const dayName = col.innerText.split('\n')[0];
+    col.innerHTML = `<strong>${dayName}</strong>`;
+  });
+
+  // Week range
+  const start = new Date(currentWeekStart);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 6);
+
+  const sleepTotals = Array(7).fill(0);
+  const logsByDay = Array(7).fill(null).map(() => []);
+
+  history.forEach(entry => {
+  const date = new Date(`${entry.date}T00:00:00`);
+  const dateOnly = new Date(date.getFullYear(), date.getMonth(), date.getDate()); // 👈 reset to midnight
+  const startOnly = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+
+  const dayIndex = Math.floor((dateOnly - startOnly) / (1000 * 60 * 60 * 24));
+
+  if (dayIndex >= 0 && dayIndex < 7) {
+    logsByDay[dayIndex].push(entry);
+
+    sleepTotals[dayIndex] += calculateSleepDuration(
+      convertTo24Hour(entry.startTime),
+      convertTo24Hour(entry.endTime)
+    );
+  }
+
+  let weekTotalHours = 0;
+let weekTotalCycles = 0;
+let weekDaysWithData = 0;
+
+sleepTotals.forEach(hours => {
+  if (hours > 0) {
+    weekTotalHours += hours;
+    weekDaysWithData++;
+    weekTotalCycles += Math.floor(hours / 1.5);
+  }
+});
+
+const avgSleep = weekDaysWithData ? (weekTotalHours / weekDaysWithData).toFixed(1) : "–";
+const avgCycles = weekDaysWithData ? (weekTotalCycles / weekDaysWithData) : "–";
+
+document.getElementById("avgSleepWeekly").textContent = avgSleep + " hours";
+document.getElementById("avgCyclesWeekly").textContent = avgCycles;
+
+});
+
+  logsByDay.forEach((logs, index) => {
+    const col = grid[index];
+
+    logs.forEach(log => {
+      const logDiv = document.createElement("div");
+      logDiv.innerHTML = `<small>${formatTimeWithSmallAmPm(log.startTime)} → ${formatTimeWithSmallAmPm(log.endTime)}</small>`;
+      logDiv.style.marginTop = "4px";
+      col.appendChild(logDiv);
+    });
+
+    if (sleepTotals[index] > 0) {
+      const totalDiv = document.createElement("div");
+      totalDiv.innerHTML = `Total: ${sleepTotals[index].toFixed(1)} hrs`;
+      totalDiv.style.fontWeight = "bold";
+      totalDiv.style.marginTop = "8px";
+      col.appendChild(totalDiv);
+    }
+  });
+
+  // Set week label
+  const label = document.getElementById("weekRangeLabel");
+  const options = { month: 'short', day: 'numeric' };
+  label.textContent = `${start.toLocaleDateString(undefined, options)} – ${end.toLocaleDateString(undefined, options)}`;
+
+  // Show/hide arrows
+  const allDates = history.map(h => new Date(`${h.date}T00:00:00`));
+  const hasPrevious = allDates.length && allDates[0] < start;
+  const hasNext = allDates.length && allDates[allDates.length - 1] > end;
+
+  document.getElementById("prevWeek").style.display = hasPrevious ? "inline-block" : "none";
+  document.getElementById("nextWeek").style.display = hasNext ? "inline-block" : "none";
+}
+
+
+document.getElementById("prevWeek").addEventListener("click", () => {
+  currentWeekStart.setDate(currentWeekStart.getDate() - 7);
+  renderWeekView();
+});
+
+document.getElementById("nextWeek").addEventListener("click", () => {
+  currentWeekStart.setDate(currentWeekStart.getDate() + 7);
+  renderWeekView();
+});
+
+function convertTo24Hour(timeStr) {
+  const [time, ampm] = timeStr.split(" ");
+  let [hour, minute] = time.split(":").map(Number);
+  if (ampm === "PM" && hour !== 12) hour += 12;
+  if (ampm === "AM" && hour === 12) hour = 0;
+  return `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+}
+
+function calculateSleepDuration(startStr, endStr) {
+  const [sh, sm] = startStr.split(":").map(Number);
+  const [eh, em] = endStr.split(":").map(Number);
+
+  const startMinutes = sh * 60 + sm;
+  let endMinutes = eh * 60 + em;
+
+  if (endMinutes <= startMinutes) endMinutes += 24 * 60;
+
+  return (endMinutes - startMinutes) / 60;
+}
+
+function renderLogList() {
+  const list = document.getElementById("logList");
+  list.innerHTML = "";
+
+  const history = JSON.parse(localStorage.getItem("sleepHistory") || "[]");
+
+  if (history.length === 0) {
+    list.innerHTML = "<li>No logs found.</li>";
+    return;
+  }
+
+  history.forEach((entry, index) => {
+    const li = document.createElement("li");
+    li.style.marginBottom = "10px";
+    li.innerHTML = `
+      ${entry.date}: ${stripAMPM(entry.startTime)} → ${stripAMPM(entry.endTime)}
+      <button onclick="deleteLog(${index})" style="margin-left: 10px;">❌</button>
+    `;
+    list.appendChild(li);
+  });
+}
+
+function openModal(id) {
+  document.getElementById(id).style.display = "block";
+  if (id === "logManagerModal") renderLogList(); // auto-load when opening
+}
+
+function deleteLog(index) {
+  const history = JSON.parse(localStorage.getItem("sleepHistory") || "[]");
+  history.splice(index, 1);
+  localStorage.setItem("sleepHistory", JSON.stringify(history));
+  renderLogList();
+  renderWeekView();
+  renderCurrentMonth();
+}
+
+function clearAllLogs() {
+  if (confirm("Are you sure you want to delete all sleep logs?")) {
+    localStorage.removeItem("sleepHistory");
+    renderLogList();
+    renderWeekView();
+    renderCurrentMonth();
+  }
+}
+  </script>
+  
+</body>
+</html>
