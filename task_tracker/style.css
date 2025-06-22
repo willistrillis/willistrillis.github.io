@@ -1,6 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap');
 
 body {
+  height: 100vh;
+  overflow: hidden;
   margin: 0;
   padding: 0;
   background: #fef6f0;
