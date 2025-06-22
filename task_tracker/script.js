@@ -3,12 +3,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('task-input');
   const list = document.getElementById('task-list');
 
+// When keyboard opens
   input.addEventListener('focus', () => {
-    document.body.classList.add('lock-scroll');
+    document.body.classList.remove('lock-scroll'); // allow temporary scroll if needed
   });
 
+  // When keyboard closes
   input.addEventListener('blur', () => {
-    document.body.classList.remove('lock-scroll');
+    // Re-lock scroll after a short delay to let keyboard fully close
+    setTimeout(() => {
+      document.body.classList.add('lock-scroll');
+      window.scrollTo(0, 0); // snap back to top just in case
+    }, 100);
   });
 
   // Save all quests to localStorage
