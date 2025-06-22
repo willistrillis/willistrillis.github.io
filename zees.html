@@ -82,7 +82,6 @@
 
     .section {
   padding: 30px;
-  margin-top: 20px;
   background-color: #ffffff;
   border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0,0,0,0.1);
@@ -257,8 +256,6 @@ a {
       <button onclick="openModal('aboutModal')">About</button>
       <button onclick="showSection('history')">History</button>
       <button onclick="showSection('calculator')">Calculator</button>
-      <button onclick="openModal('resourcesModal')">Resources</button>
-      <button onclick="openModal('settingsModal')">Settings</button>
     </div>
   </div>
 
@@ -276,27 +273,13 @@ a {
     </div>
   </div>
 
-  <div id="resourcesModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('resourcesModal')">&times;</span>
-      <h2>Resources</h2>
-      <p>Links to sleep science, sleep hygiene tips, and more will go here.</p>
-    </div>
-  </div>
-
-  <div id="settingsModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal('settingsModal')">&times;</span>
-      <h2>Settings</h2>
-      <p>Customize your preferences here in the future.</p>
-    </div>
-  </div>
-
   <div id="logManagerModal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal('logManagerModal')">&times;</span>
       <h2>Manage Sleep Logs</h2>
-      <button onclick="clearAllLogs()" style="margin-bottom: 15px;">🧹 Clear All Logs</button>
+      <button style="margin-bottom: 15px;">Export Data</button>
+      <button style="margin-bottom: 15px;">Import Data</button>
+      <button onclick="clearAllLogs()" style="margin-bottom: 15px;">Clear All Logs</button>
       <ul id="logList" style="list-style: none; padding: 0;"></ul>
     </div>
   </div>
@@ -329,11 +312,35 @@ a {
         <button type="submit">Calculate</button>
       </form>
       
-      <div id="result" style="margin-top: 20px;"></div>
+      <div id="result" style="margin-top: 50px;"></div>
 
+<hr style="margin-top: 50px;"></hr>
       <div style="margin-top: 50px;">
-        Some more information:
-        <p>research about sleep cycles and stuff.</p>
+        <strong>Some more information:</strong>
+        <div style="text-align: left; width: 70%; margin: 0 auto;">
+        <p>It takes the average person about 15 minutes to fall asleep. The calculator gives you the time that you should be asleep by.</p>
+        <p>Here are some tips to help wind down and fall asleep easier:</p>
+        <div style="margin-left: 20px;">
+        <p> - Create a routine: create a ritual that you do every night before sleeping.</p>
+        <p> - Avoid screens or bright lights before going to bed. I put my phone down an hour before going to bed.</p>
+        <p> - Do something relaxing to help you wind down: read, journal, sketch, take a shower.</p>
+        <p> - Avoid caffeine after 2pm.</p>
+        <p> - Avoid napping after 2pm.</p>
+        <p> - More information on sleep hygiene can be found <a href="https://www.health.harvard.edu/staying-healthy/sleep-hygiene-simple-practices-for-better-rest">here</a>.</p>
+        </div>
+        <p>Here aer some tips to help you get out of bed in the morning:</p>
+        <div style="margin-left: 20px;">
+        <p>Here are some tips to help wind down and fall asleep easier:</p>
+        <p> - Do NOT hit the snooze button!</p>
+        <p> - Stand up right away, maybe put your alarm clock or phone across the room.</p>
+        <p> - Open up the curtains; get in the sunlight. </p>
+        <p> - Briefly exercise.</p>
+        </div>
+        <p>Here are some more resources:</p>
+        <div style="margin-left: 20px;">
+        <p> - <a href="https://www.sleepfoundation.org/sleep-topics">The Sleep Foundation</a></p>
+        <p> - <a href="https://www.nhlbi.nih.gov/health-topics/education-and-awareness/sleep-health">National Institute of Health</a></p></div>
+        </div>
       </div>
   </div>
   
@@ -343,7 +350,7 @@ a {
 <!-- Sleep Log Form (already set up) -->
 <div class="sleep-log-form">
   <label for="sleepLog"><strong>Log sleep:</strong></label>
-  <form id="sleepHistoryForm">
+  <form id="sleepHistoryForm" style="border: 1px solid; border-style: solid; border-radius: 16px; max-width: 760px; margin: 0 auto; margin-top: 12px;">
     <p>
       From 
       <input type="date" id="logDate" required> 
@@ -361,9 +368,16 @@ a {
         <option value="AM">AM</option>
         <option value="PM">PM</option>
       </select>
-
-      <button type="submit" class="log-button">Log</button>
     </p>
+    <p>Optional:</p>
+    <p>
+        Ease of waking up (1–5): 
+        <input type="number" id="easeWake" min="1" max="5" required style="width: 50px;">
+        
+        Energy in the morning (1–5): 
+        <input type="number" id="energyMorning" min="1" max="5" required style="width: 50px;">
+    </p>
+    <button type="submit" class="log-button" style="margin-bottom: 10px;">Log</button>
   </form>
 </div>
 <button onclick="openModal('logManagerModal')" class="log-button" style="margin-top: 20px;">Manage Sleep Logs</button>
@@ -484,17 +498,15 @@ document.getElementById("sleepCalcForm").addEventListener("submit", function(eve
 
   const resultDiv = document.getElementById("result");
 
-  // Convert time to 24h format
+  // Convert to 24-hour time
   let hours24 = ampm === "PM" && hour !== 12 ? hour + 12 : hour;
   if (ampm === "AM" && hour === 12) hours24 = 0;
 
   const baseTime = new Date();
-  baseTime.setHours(hours24, minute, 0, 0); // Set target time
+  baseTime.setHours(hours24, minute, 0, 0); // Target time
 
-  // Determine cycle counts
+  // Determine cycle counts and recommended based on age
   let cycles = [2, 3, 4, 5, 6];
-
-  // Determine recommended cycle count based on age
   let recommendedCycles = 5;
   if (age) {
     const n = parseInt(age);
@@ -502,13 +514,23 @@ document.getElementById("sleepCalcForm").addEventListener("submit", function(eve
     else if (n >= 65) recommendedCycles = 4;
   }
 
-  // Recommended time
-  let recommendedSleepTime = new Date(baseTime.getTime() - recommendedCycles * 90 * 60000);
-  let rh = recommendedSleepTime.getHours();
-  let rm = recommendedSleepTime.getMinutes().toString().padStart(2, "0");
-  let rsuffix = rh >= 12 ? "PM" : "AM";
-  rh = rh % 12 || 12;
-  let recommendedString = `${rh}:${rm} ${rsuffix}`;
+  function calculateTime(base, cyclesCount, direction = 'subtract') {
+    let totalMinutes = 0;
+    if (cyclesCount > 0) {
+      totalMinutes += 70; // First cycle
+      totalMinutes += (cyclesCount - 1) * 90; // Subsequent cycles
+    }
+    const offset = direction === 'add' ? totalMinutes : -totalMinutes;
+    return new Date(base.getTime() + offset * 60000);
+  }
+
+  function formatTime(date) {
+    let h = date.getHours();
+    let m = date.getMinutes().toString().padStart(2, "0");
+    let suffix = h >= 12 ? "PM" : "AM";
+    h = h % 12 || 12;
+    return `${h}:${m} ${suffix}`;
+  }
 
   const emojiMap = {
     2: "🌘",
@@ -519,16 +541,12 @@ document.getElementById("sleepCalcForm").addEventListener("submit", function(eve
   };
 
   const customList = cycles.map(c => {
-    let minsToSubtract = c * 90;
-    let sleepTime = new Date(baseTime.getTime() - minsToSubtract * 60000);
-
-    let h = sleepTime.getHours();
-    let m = sleepTime.getMinutes().toString().padStart(2, "0");
-    let suffix = h >= 12 ? "PM" : "AM";
-    h = h % 12 || 12;
-
-    return `<li>${emojiMap[c]} ${c} sleep cycles: sleep by <strong>${h}:${m} ${suffix}</strong></li>`;
+    const time = calculateTime(baseTime, c, action === "sleep" ? "add" : "subtract");
+    return `<li>${emojiMap[c]} ${c} sleep cycles: ${action === "sleep" ? "wake up by" : "sleep by"} <strong>${formatTime(time)}</strong></li>`;
   }).join("");
+
+  const recommendedTime = calculateTime(baseTime, recommendedCycles, action === "sleep" ? "add" : "subtract");
+  const recommendedString = formatTime(recommendedTime);
 
   resultDiv.innerHTML = `
     <p>If you want to <strong>${action === "sleep" ? "go to sleep" : "wake up"}</strong> at 
@@ -548,7 +566,7 @@ document.getElementById("sleepCalcForm").addEventListener("submit", function(eve
       max-width: 300px;
       font-weight: bold;
     ">
-      ✅ Recommended: Sleep by <strong>${recommendedString}</strong> (${recommendedCycles} cycles)
+      ✅ Recommended: ${action === "sleep" ? "Wake up by" : "Sleep by"} <strong>${recommendedString}</strong> (${recommendedCycles} cycles)
     </div>
 
     ${age ? `<p>(It is recommended that people your age should get ${recommendedCycles} cycles per night.)</p>` : ''}
@@ -682,6 +700,9 @@ document.getElementById("sleepHistoryForm").addEventListener("submit", function(
   const endMinute = parseInt(document.getElementById("endMinute").value);
   const endAmpm = document.getElementById("endAmpm").value;
 
+  const easeWake = parseInt(document.getElementById("easeWake").value);
+  const energyMorning = parseInt(document.getElementById("energyMorning").value);
+
   const sleepStartDate = new Date(date); // base date from input
 
 // Convert to 24h for logic
@@ -698,8 +719,11 @@ const adjustedDate = sleepStartDate.toISOString().split("T")[0]; // YYYY-MM-DD
 const entry = {
   date: adjustedDate,
   startTime: `${startHour}:${startMinute.toString().padStart(2, '0')} ${startAmpm}`,
-  endTime: `${endHour}:${endMinute.toString().padStart(2, '0')} ${endAmpm}`
+  endTime: `${endHour}:${endMinute.toString().padStart(2, '0')} ${endAmpm}`,
+  easeWake,
+  energyMorning
 };
+
 
 
   // Save to localStorage
@@ -844,8 +868,8 @@ function renderLogList() {
     const li = document.createElement("li");
     li.style.marginBottom = "10px";
     li.innerHTML = `
+      <button onclick="deleteLog(${index})" style="margin-right: 10px; margin-left: 4px">❌</button>
       ${entry.date}: ${stripAMPM(entry.startTime)} → ${stripAMPM(entry.endTime)}
-      <button onclick="deleteLog(${index})" style="margin-left: 10px;">❌</button>
     `;
     list.appendChild(li);
   });

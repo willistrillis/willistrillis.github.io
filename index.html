@@ -1,13 +1,75 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Matthew Willis</title>
+  <style>
+    :root {
+      /* Fonts & Layout */
+      font-family: sans-serif;
+      line-height: 1.5;
+      font-weight: 400;
+
+      /* Updated Color Palette */
+      --dark: #1E1E2F;
+      --accent: #F25C54;
+      --primary: #3FB68B;
+      --highlight: #F6E27F;
+      --text: #FDFDFD;
+      --background: #131417;
+
+      /* Defaults */
+      color-scheme: dark;
+      color: var(--text);
+      background-color: var(--background);
+
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: inherit;
+      background-color: var(--background);
+      color: var(--text);
+    }
+
+    .home {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 5rem;
+      text-align: center;
+      font-family: system-ui, sans-serif;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 2px solid transparent;
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+
+    a:hover {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+  </style>
+</head>
 <body>
-<h1>Matt's Tools</h1>
-<p>Hi, my name is Matt. I've made a few web apps to help me stay on top of everything. Feel free to use them as well!</p>
-<div><a href="goodthings.html"> - GoodThings</a></div>
-<div><a href="zees.html"> - Yawniverse</a></div>
-<div style="margin-top: 20px;">In development:</div>
-<div> - Recipe Manager / Grocery List Generator </div>
-<div> - Workout Builder </div>
-<div> - Finance / budget planner</div>
+  <div class="home">
+    <div style="font-size: 1.5rem; margin-bottom:2rem;">Matthew Willis</div>
+    <div style="display: flex; flex-direction: column; align-items: center;">
+      <a href="#/professional">– professional</a>
+      <a href="#/personal">– personal</a>
+      <a href="/apps">– web_apps</a>
+    </div>  
+  </div>
 </body>
 </html>

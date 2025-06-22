@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title>Quest Log</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="quest-log">
+    <header>
+      <img src="images/frog.png" class="mascot" alt="Frog mascot" />
+      <h1>M'Lady's Quests</h1>
+      <p class="greeting">Good morrow</p>
+    </header>
+    <form id="task-form">
+      <input type="text" id="task-input" placeholder="What is thy quest?" required />
+      <button type="submit">Add Quest</button>
+    </form>
+    <ul id="task-list"></ul>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

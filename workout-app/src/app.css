@@ -1,0 +1,114 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  font-family: 'Poppins', system-ui, sans-serif;
+  background: #f6f5fb;
+  color: #444;
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+.card {
+  padding: 2em;
+}
+
+#app {
+  text-align: center;
+}
+
+button {
+  background: white;
+  border: none;
+  color: #8C66DA;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #EFE7FF;
+  transform: scale(1.02);
+}
+
+button.selected {
+  background: #8C66DA;
+  color: white;
+}
+
+input:focus,
+button:focus {
+  outline: none; /* remove default blue glow */
+  box-shadow: 0 0 0 2px #C7B6EB;
+  border-color: #C7B6EB;
+}
+
+.section-divider {
+  border: none;
+  border-top: 2px solid #C0AFFF;
+  margin: 1rem auto;
+  width: 100%;
+  max-width: 45rem;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.modal-overlay {
+  z-index: 100;
+  left:0;
+}
+
+.modal{
+  z-index: 101;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
