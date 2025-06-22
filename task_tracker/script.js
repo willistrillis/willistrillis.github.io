@@ -3,6 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('task-input');
   const list = document.getElementById('task-list');
 
+  input.addEventListener('focus', () => {
+    document.body.classList.add('lock-scroll');
+  });
+
+  input.addEventListener('blur', () => {
+    document.body.classList.remove('lock-scroll');
+  });
+
   // Save all quests to localStorage
   const saveTasks = () => {
     const quests = [...list.children].map(li => ({
