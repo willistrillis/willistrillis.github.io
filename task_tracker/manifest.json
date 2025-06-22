@@ -1,0 +1,16 @@
+{
+  "name": "Quest Log",
+  "short_name": "Quests",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#fff",
+  "theme_color": "#333",
+  "description": "Track M'lady's noble quests!",
+  "icons":[
+    {
+      "src": "images/icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

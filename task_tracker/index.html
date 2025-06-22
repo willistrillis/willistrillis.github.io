@@ -7,6 +7,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Quests">
   <link rel="apple-touch-icon" href="images/icon.png">
+  <link rel="manifest" href="manifest.json">
 
   <title>Quest Log</title>
   <link rel="stylesheet" href="style.css" />
@@ -25,5 +26,14 @@
     <ul id="task-list"></ul>
   </div>
   <script src="script.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/service-worker.js').catch(err => {
+        console.error('Service Worker registration failed:', err);
+      });
+    });
+  }
+  </script>
 </body>
 </html>
