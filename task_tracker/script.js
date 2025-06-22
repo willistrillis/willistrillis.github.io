@@ -25,9 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
     li.textContent = text;
     if (completed) li.classList.add('completed');
   
-    li.addEventListener('click', () => {
-      li.classList.toggle('completed');
-      saveTasks();
+    li.addEventListener('pointerup', (e) => {
+      // Only mark complete if it was a tap (not a hold)
+      if (holdTime < 1000) {
+        li.classList.toggle('completed');
+        saveTasks();
+      }
     });
   
     let holdTimer = null;
