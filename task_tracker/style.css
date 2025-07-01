@@ -120,3 +120,97 @@ li.shaking {
   75%  { transform: translateX(-2px) rotate(-1deg); }
   100% { transform: translateX(0) rotate(1deg); }
 }
+
+.hidden {
+  display: none;
+}
+
+.modal {
+  display: flex;  /* Always flex so it's ready to transition */
+  opacity: 0;
+  pointer-events: none;  /* Prevent interaction when hidden */
+  transition: opacity 0.3s ease;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.modal-content {
+  margin-top: -200px;
+  position: relative;
+  height: 509px;
+  width: 348px;
+
+  /* Remove static background */
+  /* background: url('images/scroll.png') center center no-repeat; */
+
+  background-size: cover;
+  background-repeat: no-repeat;
+
+  padding: 1em;
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  font-family: 'Cinzel Decorative', serif;
+  text-align: center;
+}
+
+
+#task-form {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75em;
+}
+
+#task-form.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#task-form h2 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+#task-input {
+  /* width: 100%; */
+  font-size: 0.75rem;
+  padding: 0.5em;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+#task-form button,
+#cancel-btn {
+  /* width: 100%; */
+  font-size: 0.75rem;
+  box-sizing: border-box;
+}
+
+
+#new-task-btn {
+  display: block;
+  margin: 0 auto 10px auto; /* auto left/right centers it, bottom margin adds spacing */
+}
+
+.task-image {
+  display: block;
+  width: 50px; /* adjust as needed */
+  margin: 5px auto 0;
+}

@@ -19,11 +19,21 @@
       <h1>M'Lady's Quests</h1>
       <p class="greeting">Good morrow</p>
     </header>
-    <form id="task-form">
-      <input type="text" id="task-input" placeholder="What is thy quest?"/>
-      <button type="submit">Add Quest</button>
-    </form>
-    <ul id="task-list" class=""allow-touch"></ul>
+    <button id="new-task-btn">New Task</button>
+
+    <div id="task-modal" class="modal hidden">
+      <div class="modal-content">
+    
+        <form id="task-form" class="hidden">
+          <h2>Create New Task</h2>
+          <input id="task-input" type="text" placeholder="( enter task name here )" required autocomplete="off"/>
+          <button type="submit">Add Task</button>
+          <button type="button" id="cancel-btn">Cancel</button>
+        </form>
+      </div>
+    </div>
+
+    <ul id="task-list" class="allow-touch"></ul>
   </div>
   <script src="script.js"></script>
   <script>
