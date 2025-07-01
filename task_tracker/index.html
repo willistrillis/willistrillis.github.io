@@ -6,16 +6,17 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Quests">
-  <link rel="apple-touch-icon" href="images/icon.png">
-  <link rel="manifest" href="manifest.json">
 
   <title>Quest Log</title>
-  <link rel="stylesheet" href="style.css" />
+
+  <link rel="apple-touch-icon" href="./images/icon.png">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
   <div class="quest-log">
     <header>
-      <img src="images/frog.png" class="mascot" alt="Frog mascot" />
+      <img src="./images/frog.png" class="mascot" alt="Frog mascot" />
       <h1>M'Lady's Quests</h1>
       <p class="greeting">Good morrow</p>
     </header>
@@ -23,7 +24,6 @@
 
     <div id="task-modal" class="modal hidden">
       <div class="modal-content">
-    
         <form id="task-form" class="hidden">
           <h2>Create New Task</h2>
           <input id="task-input" type="text" placeholder="( enter task name here )" required autocomplete="off"/>
@@ -35,15 +35,17 @@
 
     <ul id="task-list" class="allow-touch"></ul>
   </div>
-  <script src="script.js"></script>
+
+  <script src="./script.js"></script>
   <script>
     if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/service-worker.js').catch(err => {
-        console.error('Service Worker registration failed:', err);
+      window.addEventListener('load', () => {
+        const swPath = window.location.pathname.replace(/\/[^\/]*$/, '/') + 'service-worker.js';
+        navigator.serviceWorker.register(swPath).catch(err => {
+          console.error('Service Worker registration failed:', err);
+        });
       });
-    });
-  }
+    }
   </script>
 </body>
 </html>
