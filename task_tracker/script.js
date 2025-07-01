@@ -7,12 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const list = document.getElementById('task-list');
   const modalContent = document.querySelector('.modal-content');
 
+  // Dynamically compute the base URL
+  const basePath = window.location.pathname.replace(/\/[^\/]*$/, '/');
+
   const frames = [
-    'images/task.png',
-    'images/f0.png',
-    'images/f2.png',
-    'images/f4.png',
-    'images/scroll.png'
+    `${basePath}images/task.png`,
+    `${basePath}images/f0.png`,
+    `${basePath}images/f2.png`,
+    `${basePath}images/f4.png`,
+    `${basePath}images/scroll.png`
   ];
 
   const placeholders = [
@@ -33,32 +36,29 @@ document.addEventListener('DOMContentLoaded', () => {
     if (reverse) {
       if (currentFrame >= 0) {
         modalContent.style.backgroundImage = `url('${frames[currentFrame]}')`;
-  
+
         if (currentFrame === 2) {
           form.classList.remove('visible');
         }
-  
+
         currentFrame--;
         setTimeout(() => animate(true), 100);
       } else {
-        // Instead of removing visible immediately, fade out
         modal.classList.remove('visible');
-        // no need to set display:none — opacity + pointer-events will do the job
       }
     } else {
       if (currentFrame < frames.length) {
         modalContent.style.backgroundImage = `url('${frames[currentFrame]}')`;
-  
+
         if (currentFrame === 3) {
           form.classList.add('visible');
         }
-  
+
         currentFrame++;
         setTimeout(() => animate(false), 100);
       }
     }
   };
-  
 
   const saveTasks = () => {
     const quests = [...list.children].map(li => ({
@@ -131,10 +131,10 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.classList.add('visible');
     form.classList.remove('visible');
     form.style.transition = '';
-  
+
     const randomPlaceholder = placeholders[Math.floor(Math.random() * placeholders.length)];
     input.placeholder = randomPlaceholder;
-  
+
     input.focus();
     currentFrame = 0;
     animate(false);
