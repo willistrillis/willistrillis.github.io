@@ -93,16 +93,17 @@ ul {
 }
 
 li {
-  padding: 12px 14px;
-  margin-bottom: 10px;
-  background: #ffece6;
-  border-radius: 15px;
-  border-left: 6px solid #e5b8a0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  background: url('./images/task2.png') center center / contain no-repeat !important;
+  min-height: 50px;
   font-size: 1rem;
+  color: #5b3a29;
+  margin-top: 1vh;
+  display: flex;
+  align-items: center;    /* vertical centering */
+  justify-content: center; /* horizontal centering */
+  text-align: center;      /* center multi-line text */
 }
+
 
 li.completed {
   text-decoration: line-through;
@@ -126,6 +127,7 @@ li.shaking {
 }
 
 .modal {
+  z-index: 9; 
   display: flex;  /* Always flex so it's ready to transition */
   opacity: 0;
   pointer-events: none;  /* Prevent interaction when hidden */
@@ -207,6 +209,7 @@ li.shaking {
 #new-task-btn {
   display: block;
   margin: 0 auto 10px auto; /* auto left/right centers it, bottom margin adds spacing */
+  margin-bottom: 25px;
 }
 
 .task-image {

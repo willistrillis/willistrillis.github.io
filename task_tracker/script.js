@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const placeholders = [
     'Name thy quest...',
     'What task dost thou seek?',
-    'Set forth a new mission...',
     'Proclaim thine objective...',
     'Record thy noble duty...',
     'What venture awaits thee?',
@@ -32,12 +31,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let currentFrame = 0;
 
+  // Preload frames
+  const preloadFrames = () => {
+    frames.forEach(src => {
+      const img = new Image();
+      img.src = src;
+    });
+  };
+
+  preloadFrames();
+
   const animate = (reverse = false) => {
     if (reverse) {
       if (currentFrame >= 0) {
         modalContent.style.backgroundImage = `url('${frames[currentFrame]}')`;
 
-        if (currentFrame === 2) {
+        if (currentFrame === 3) {
           form.classList.remove('visible');
         }
 
@@ -135,7 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const randomPlaceholder = placeholders[Math.floor(Math.random() * placeholders.length)];
     input.placeholder = randomPlaceholder;
 
-    input.focus();
     currentFrame = 0;
     animate(false);
   });
