@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (currentFrame >= 0) {
         modalContent.style.backgroundImage = `url('${frames[currentFrame]}')`;
 
-        if (currentFrame === 3) {
+        if (currentFrame === 4) {
           form.classList.remove('visible');
         }
 
