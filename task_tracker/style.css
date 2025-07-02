@@ -94,7 +94,7 @@ ul {
 
 li {
   background: url('./images/task2.png') center center / contain no-repeat !important;
-  min-height: 50px;
+  min-height: 60px;
   font-size: 1rem;
   color: #9e7864;
   margin-top: 1vh;
