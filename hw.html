@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Homework Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      --card: #f7f7f7;
+      --ok: hsl(315, 100%, 53%);
+      --text: #222;
+      --muted: #666;
+      --complete: #9e9e9e;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      color: var(--text);
+    }
+
+    h1 { text-align: center; margin-bottom: 18px; }
+
+    /* Inline row of inputs + button */
+    #homework-form {
+      max-width: 800px;
+      margin: 0 auto 20px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    input, button {
+      padding: 10px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    input[type="text"] {
+      min-width: 220px;
+      flex: 1 1 260px;
+    }
+
+    input[type="date"],
+    input[type="time"] {
+      flex: 0 1 160px;
+    }
+
+    ul { list-style: none; padding: 0; margin: 0; }
+    li {
+      background: var(--card);
+      margin-bottom: 10px;
+      padding: 12px 14px;
+      border-left: 4px solid var(--ok);
+      display: grid;
+      grid-template-columns: auto 1fr auto; /* checkbox | content | controls */
+      grid-template-rows: auto auto;       /* name/badge row, due row */
+      gap: 6px 12px;
+      align-items: center;
+      border-radius: 6px;
+    }
+
+    /* Checkbox cell */
+    .checkwrap {
+      grid-row: 1 / span 2;   /* spans both rows */
+      align-self: start;
+      padding-top: 2px;
+    }
+
+    .checkwrap input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    li.completed {
+      border-left-color: var(--complete);
+      filter: grayscale(1) opacity(0.6);   /* gray filter */
+    }
+
+    .name { font-weight: 700; grid-column: 2 / 3; }
+    .due  { color: var(--muted); font-weight: 600; grid-column: 2 / 3; }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      grid-column: 3 / 4;
+      grid-row: 1;
+    }
+
+    .btn-link {
+      background: transparent;
+      border: none;
+      color: var(--ok);
+      cursor: pointer;
+      padding: 6px 8px;
+      border-radius: 4px;
+    }
+    .btn-link:hover { background: rgba(255, 41, 223, 0.08); }
+  </style>
+</head>
+<body>
+  <h1>Homework Tracker</h1>
+
+  <form id="homework-form" autocomplete="off">
+    <input type="text" id="assignment-name" placeholder="Assignment Name" required />
+    <input type="date" id="due-date" required />
+    <!-- time is optional; defaults to 11:59 PM if empty -->
+    <input type="time" id="due-time" />
+    <button type="submit">Add Assignment</button>
+  </form>
+
+  <ul id="assignment-list"></ul>
+
+  <script>
+    const form = document.getElementById('homework-form');
+    const nameInput = document.getElementById('assignment-name');
+    const dateInput = document.getElementById('due-date');
+    const timeInput = document.getElementById('due-time');
+    const list = document.getElementById('assignment-list');
+
+    let assignments = [];
+
+    // Load saved from localStorage
+    try {
+      const saved = localStorage.getItem('assignments');
+      if (saved) assignments = JSON.parse(saved);
+    } catch (_) {}
+
+    function save() {
+      localStorage.setItem('assignments', JSON.stringify(assignments));
+    }
+
+    // Combine date + time; default time to 23:59 if empty
+    function combineDateTime(dateStr, timeStr) {
+      if (!dateStr) return null;
+      const t = timeStr && timeStr.trim() ? timeStr : '23:59'; // 11:59 PM default
+      return new Date(`${dateStr}T${t}`);
+    }
+
+    function formatLocal(dt) {
+      return dt.toLocaleString([], { dateStyle: 'medium', timeStyle: 'short' });
+    }
+
+    function escapeHtml(s) {
+      return s.replace(/[&<>"']/g, m => (
+        { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' }[m]
+      ));
+    }
+
+    function render() {
+      // Sort: soonest due first (completed still sorted by date)
+      assignments.sort((a, b) => new Date(a.dueISO) - new Date(b.dueISO));
+      list.innerHTML = '';
+
+      assignments.forEach((a, idx) => {
+        const li = document.createElement('li');
+
+        const due = new Date(a.dueISO);
+
+        if (a.completed) li.classList.add('completed');
+
+        // Build row
+        const checkwrap = document.createElement('div');
+        checkwrap.className = 'checkwrap';
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = !!a.completed;
+        checkbox.setAttribute('aria-label', 'Mark assignment complete');
+        checkwrap.appendChild(checkbox);
+
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'name';
+        nameDiv.textContent = a.name;
+
+        const controls = document.createElement('div');
+        controls.className = 'controls';
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'btn-link';
+        delBtn.textContent = 'Delete';
+        delBtn.addEventListener('click', () => {
+          assignments.splice(idx, 1);
+          save();
+          render();
+        });
+        controls.appendChild(delBtn);
+
+        const dueDiv = document.createElement('div');
+        dueDiv.className = 'due';
+        dueDiv.textContent = `Due: ${formatLocal(due)}`;
+
+        // Checkbox toggle handler
+        checkbox.addEventListener('change', () => {
+          a.completed = checkbox.checked;
+          save();
+          render(); // re-render to update classes/badge
+        });
+
+        // Assemble
+        li.appendChild(checkwrap);
+        li.appendChild(nameDiv);
+        li.appendChild(controls);
+        li.appendChild(dueDiv);
+
+        list.appendChild(li);
+      });
+    }
+
+    // Submit handler
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = nameInput.value.trim();
+      const dt = combineDateTime(dateInput.value, timeInput.value);
+      if (!name || !dt) return;
+
+      assignments.push({
+        name: escapeHtml(name),
+        dueISO: dt.toISOString(),
+        completed: false
+      });
+
+      save();
+      render();
+      form.reset();
+      nameInput.focus();
+    });
+
+    render();
+  </script>
+</body>
+</html>
